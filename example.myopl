@@ -1,21 +1,18 @@
 # This is a very useful piece of software
 
-FUN oopify(prefix) -> prefix + "oop"
+VARIABEL NAME = "nah"
+VARIABEL NUM = 2
+VARIABEL A = 2
+VARIABEL B = 5
 
-FUN join(elements, separator)
-	VAR result = ""
-	VAR len = LEN(elements)
+CETAK("Greetings universe!")
 
-	FOR i = 0 TO len THEN
-		VAR result = result + elements/i
-		IF i != len - 1 THEN VAR result = result + separator
-	END
+DARI i = 0 KE 5 MAKA
+	KALAU (i == 3) MAKA UDAHAN
+	CETAK(5*i)
+	CETAK("HELLO")
+SELESAI
 
-	RETURN result
-END
+CETAK(NUM*3/2/2)
 
-PRINT("Greetings universe!")
-
-FOR i = 0 TO 5 THEN
-	PRINT(join([oopify("l"), oopify("sp")], ", "))
-END
+KALAU (NUM == 1) MAKA CETAK("YES") 

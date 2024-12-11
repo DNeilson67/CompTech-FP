@@ -1,12 +1,12 @@
 statements	: NEWLINE* statement (NEWLINE+ statement)* NEWLINE*
 
-statement 	: KEYWORD:RETURN expr?
-			: KEYWORD:CONTINUE
-			: KEYWORD:BREAK
+statement 	: KEYWORD:HASILNYA expr?
+			: KEYWORD:LANJUT
+			: KEYWORD:UDAHAN
 			: expr
 
-expr    	: KEYWORD:VAR IDENTIFIER EQ expr
-			: comp-expr ((KEYWORD:AND|KEYWORD:OR) comp-expr)*
+expr    	: KEYWORD:VARIABEL IDENTIFIER EQ expr
+			: comp-expr ((KEYWORD:DAN|KEYWORD:ATAU) comp-expr)*
 
 comp-expr 	: NOT comp-expr
 			: arith-expr ((EE|LT|GT|LTE|GTE) arith-expr)*
@@ -32,28 +32,28 @@ atom 		: INT|FLOAT|STRING|IDENTIFIER
 
 list-expr 	: LSQUARE (expr (COMMA expr)*)? RSQUARE
 
-if-expr		: KEYWORD:IF expr KEYWORD:THEN 
+if-expr		: KEYWORD:KALAU expr KEYWORD:MAKA 
 			  (statement if-expr-b|if-expr-c?)
-			| (NEWLINE statements KEYWORD:END|if-expr-b|if-expr-c)
+			| (NEWLINE statements KEYWORD:SELESAI|if-expr-b|if-expr-c)
 
-if-expr-b	: KEYWORD:ELIF expr KEYWORD:THEN 
+if-expr-b	: KEYWORD:KALAUGITU expr KEYWORD:MAKA 
 			  (statement if-expr-b|if-expr-c?)
-			| (NEWLINE statements KEYWORD:END|if-expr-b|if-expr-c)	
+			| (NEWLINE statements KEYWORD:SELESAI|if-expr-b|if-expr-c)	
 
-if-expr-c	: KEYWORD:ELSE 
+if-expr-c	: KEYWORD:SELAINNYA 
 			  statement
-			| (NEWLINE statements KEYWORD:END)
+			| (NEWLINE statements KEYWORD:SELESAI)
 
-for-expr	: KEYWORD:FOR IDENTIFIER EQ expr KEYWORD:TO expr
-			  (KEYWORD:STEP expr)? KEYWORD:THEN 
+for-expr	: KEYWORD:DARI IDENTIFIER EQ expr KEYWORD:KE expr
+			  (KEYWORD:STEP expr)? KEYWORD:MAKA 
 			  statement
-			| (NEWLINE statements KEYWORD:END)
+			| (NEWLINE statements KEYWORD:SELESAI)
 
-while-expr	: KEYWORD:WHILE expr KEYWORD:THEN 
+while-expr	: KEYWORD:SELAMA expr KEYWORD:MAKA 
 			  expr
-			| (NEWLINE statements KEYWORD:END)
+			| (NEWLINE statements KEYWORD:SELESAI)
 
-func-def	: KEYWORD:FUN IDENTIFIER?
+func-def	: KEYWORD:FUNGSI IDENTIFIER?
 			  LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN
 			  (ARROW expr)
-			| (NEWLINE statements KEYWORD:END)
+			| (NEWLINE statements KEYWORD:SELESAI)
