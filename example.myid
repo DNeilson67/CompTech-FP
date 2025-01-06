@@ -2,7 +2,7 @@
 
 VARIABEL NAME = "nah"
 VARIABEL NUM = 2
-VARIABEL A = 6
+VARIABEL A = 
 VARIABEL B = 6
 
 CETAK("Greetings universe!")
