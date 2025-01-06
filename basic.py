@@ -37,27 +37,33 @@ class InvalidSyntaxError(Error):
 		super().__init__(pos_start, pos_end, 'Invalid Syntax', details)
 
 class RTError(Error):
-	def __init__(self, pos_start, pos_end, details, context):
-		super().__init__(pos_start, pos_end, 'Runtime Error', details)
-		self.context = context
+    def __init__(self, pos_start, pos_end, details, context):
+        if not pos_start or not context:
+            raise ValueError("pos_start and context must not be None")
+        super().__init__(pos_start, pos_end, 'Runtime Error', details)
+        self.context = context
 
-	def as_string(self):
-		result  = self.generate_traceback()
-		result += f'{self.error_name}: {self.details}'
-		result += '\n\n' + string_with_arrows(self.pos_start.ftxt, self.pos_start, self.pos_end)
-		return result
+    def as_string(self):
+        result = self.generate_traceback()
+        result += f'{self.error_name}: {self.details}'
+        result += '\n\n' + string_with_arrows(self.pos_start.ftxt, self.pos_start, self.pos_end)
+        return result
 
-	def generate_traceback(self):
-		result = ''
-		pos = self.pos_start
-		ctx = self.context
+    def generate_traceback(self):
+        result = ''
+        pos = self.pos_start
+        ctx = self.context
 
-		while ctx:
-			result = f'  File {pos.fn}, line {str(pos.ln + 1)}, in {ctx.display_name}\n' + result
-			pos = ctx.parent_entry_pos
-			ctx = ctx.parent
+        while ctx:
+            if pos is None:
+                result = "Traceback incomplete: Missing position information.\n" + result
+                break
+            result = f'  File {pos.fn}, line {str(pos.ln + 1)}, in {ctx.display_name}\n' + result
+            pos = ctx.parent_entry_pos
+            ctx = ctx.parent
 
-		return 'Traceback (most recent call last):\n' + result
+        return ''
+
 
 # Position
 
@@ -619,7 +625,7 @@ class Parser:
 		if res.error:
 			return res.failure(InvalidSyntaxError(
 				self.current_tok.pos_start, self.current_tok.pos_end, 
-				"Expected 'VARIABEL', 'KALAU', 'DARI', 'SELAMA', 'FUNGSI', int, float, identifier, '+', '-', '(', '[', 'TIDAK', 'HASILNYA', 'LANJUT' or 'UDAHAN'"
+				"Expected 'VARIABEL', 'KALAU', 'DARI', 'SELAMA', int, float, identifier, '+', '-', '(', '[', 'TIDAK', 'HASILNYA', 'LANJUT' or 'UDAHAN'"
 			))
    
 		return res.success(expr)
@@ -1013,7 +1019,7 @@ class Parser:
 
 		return res.failure(InvalidSyntaxError(
 			tok.pos_start, tok.pos_end,
-			"Expected int, float, identifier, '+', '-', '(', '[', 'KALAU', 'DARI', 'SELAMA', 'FUNGSI'"
+			"Expected int, float, identifier, '+', '-', '(', '[', 'KALAU', 'DARI', 'SELAMA'"
 		))
 
 	def power(self):
@@ -1092,7 +1098,7 @@ class Parser:
 		if res.error:
 			return res.failure(InvalidSyntaxError(
 				self.current_tok.pos_start, self.current_tok.pos_end,
-				"Expected 'VARIABEL', 'KALAU', 'DARI', 'SELAMA', 'FUNGSI', int, float, identifier, '+', '-', '(', '[', or 'TIDAK'"
+				"Expected 'VARIABEL', 'KALAU', 'DARI', 'SELAMA', int, float, identifier, '+', '-', '(', '[', or 'TIDAK'"
 			))
 
 		return res.success(node)
@@ -1812,11 +1818,13 @@ BuiltInFunction.run      = BuiltInFunction("run")
 # CONTEXT
 
 class Context:
-	def __init__(self, display_name, parent=None, parent_entry_pos=None):
-		self.display_name = display_name
-		self.parent = parent
-		self.parent_entry_pos = parent_entry_pos
-		self.symbol_table = None
+    def __init__(self, display_name, parent=None, parent_entry_pos=None):
+        self.display_name = display_name
+        self.parent = parent
+        # Ensure `parent_entry_pos` has a valid `Position` object if not provided
+        self.parent_entry_pos = parent_entry_pos or Position(0, 0, 0, '<unknown>', '')
+        self.symbol_table = None
+
 
 # SYMBOL TABLE
 

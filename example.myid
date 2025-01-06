@@ -7,8 +7,8 @@ VARIABEL B = 6
 
 CETAK("Greetings universe!")
 
-DARI i = 0 KE 5 MAK
-	KALAU (i == 3) MAKA LANJUT
+DARI i = 0 KE 5 MAKA
+	KALAU (i == 3) MAKA UDAHAN
 	CETAK(5*i)
 	CETAK("HELLO")
 SELESAI
