@@ -1,0 +1,5 @@
+# The code below is commented.
+# CETAK("THIS IS COMMENTED")
+
+# The code below is not commented.
+CETAK("THIS IS NOT COMMENTED")

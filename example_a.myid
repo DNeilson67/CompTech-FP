@@ -1,10 +1,11 @@
 CETAK("HELLO WORLD!")
 
-VARIABE name = "Indo Compiler"
+VARIABEL name = "Indo Compiler"
 VARIABEL A = 1
 VARIABEL B = 2
  
 CETAK("This is " + name)
 CETAK("A + B is")
 CETAK(A+B)
+
 
